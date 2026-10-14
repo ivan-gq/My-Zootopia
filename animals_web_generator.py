@@ -7,6 +7,16 @@ def load_data(file_path):
         return json.load(handle)
 
 
+def get_skin_types(data):
+    skin_types = set()
+    for animal in data:
+        skin = animal['characteristics'].get('skin_type')
+        if skin:
+            skin_types.add(skin.lower())
+
+    return skin_types
+
+
 def serialize_animal(data):
     '''Generate serialized HTML tags per animal
     '''
@@ -23,8 +33,11 @@ def serialize_animal(data):
             output_str += ", "
     output_str += "</li>\n"
     animal_type = data['characteristics'].get('type')
+    skin_type = data['characteristics'].get('skin_type')
     if animal_type:
         output_str += f"\t\t\t<li><strong>Type: </strong>{animal_type}</li>\n"
+    if skin_type:
+        output_str += f"\t\t\t<li><strong>Skin type: </strong>{skin_type}</li>\n"
     output_str += "\t\t</ul>\n\t</div>\n</li>\n"
     return output_str
 
@@ -37,8 +50,34 @@ def main():
         html_content = file.read()
 
     output_str = ''
-    for animal in animals_data:
-        output_str += serialize_animal(animal)
+    while True:
+        user_choice = input("Filter by skin type [yes/no]:").strip()
+        if user_choice.lower() == "yes" or user_choice.lower() == "y":
+            skin_types = get_skin_types(animals_data)
+            print("Available skin types: ")
+            for skin in skin_types:
+                print(f"\t{skin.title()}", end=" ")
+
+            while True:
+                user_choice = input("\nEnter skin type from selection above:").strip()
+                if user_choice.lower() in skin_types:
+                    display_skin_type = user_choice.lower()
+                    for animal in animals_data:
+                        if animal['characteristics'].get('skin_type').lower() == display_skin_type:
+                            output_str += serialize_animal(animal)
+                            print("correct slection")
+                    break   #break skin input while loop
+                else:
+                    print("Skin type not available :(")
+            break   #break main while loop
+
+        elif user_choice.lower() == "no" or user_choice.lower() == "n":
+            print("no")
+            for animal in animals_data:
+                output_str += serialize_animal(animal)
+            break
+
+    print(output_str)
 
     new_page = html_content.replace("__REPLACE_ANIMALS_INFO__", output_str)
 
