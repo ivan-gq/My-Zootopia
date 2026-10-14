@@ -1,5 +1,7 @@
 import json
 
+HTML_FILE = "animals.html"
+JSON_FILE = "animals_data.json"
 
 def load_data(file_path):
     """ Loads a JSON file """
@@ -44,7 +46,7 @@ def serialize_animal(data):
 
 def main():
     '''Main fucntion'''
-    animals_data = load_data('animals_data.json')
+    animals_data = load_data(JSON_FILE)
 
     with open("animals_template.html", "r", encoding="utf-8") as file:
         html_content = file.read()
@@ -65,7 +67,6 @@ def main():
                     for animal in animals_data:
                         if animal['characteristics'].get('skin_type').lower() == display_skin_type:
                             output_str += serialize_animal(animal)
-                            print("correct slection")
                     break   #break skin input while loop
                 else:
                     print("Skin type not available :(")
@@ -77,12 +78,12 @@ def main():
                 output_str += serialize_animal(animal)
             break
 
-    print(output_str)
-
     new_page = html_content.replace("__REPLACE_ANIMALS_INFO__", output_str)
+    
 
-    with open("animals.html", "w", encoding="utf-8") as file:
+    with open(HTML_FILE, "w", encoding="utf-8") as file:
         html_content = file.write(new_page)
+    print(f"HTML file {HTML_FILE} updated.")
 
 
 if __name__ == "__main__":
