@@ -12,18 +12,19 @@ with open("animals_template.html", "r", encoding="utf-8") as file:
 
 output_str = ''
 for animal in animals_data:
-    output_str += f"Name: {animal['name']}\n"
-    output_str += f"Diet: {animal['characteristics']['diet']}\n"
+    output_str += '<li class="cards__item">'
+    output_str += f"Name: {animal['name']}<br/>\n"
+    output_str += f"Diet: {animal['characteristics']['diet']}<br/>\n"
     output_str += f"Location: "
     for i in range(len(animal['locations'])):
         output_str += f"{animal['locations'][i]}"
         if len(animal['locations']) > 1:
            output_str += ", "
-    output_str += "\n"
+    output_str += "<br/>\n"
     animal_type = animal['characteristics'].get('type')
     if animal_type:
-       output_str += f"Type: {animal_type}\n"
-    output_str += "\n"
+       output_str += f"Type: {animal_type}<br/>\n"
+    output_str += "<br/></li>\n"
 
 new_page = html_content.replace("__REPLACE_ANIMALS_INFO__", output_str)
 print(new_page)
